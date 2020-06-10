@@ -1,68 +1,77 @@
 -- 1. Provide a query showing Customers (just their full names, customer ID and country) who are not in the US.
-select customerid, firstname, lastname, country
-from customer
-where not country = 'USA';
+select
+    CustomerId,
+    FirstName,
+    LastName,
+    Country
+from
+    Customer
+where
+    Country is NOT 'USA';
 
 -- 2. Provide a query only showing the Customers from Brazil.
-select * from customer
-where country = 'Brazil';
-
+select *
+from
+    Customer
+where
+    Country = 'Brazil';
+    
 -- 3. Provide a query showing the Invoices of customers who are from Brazil. The resultant table should show the customer's full name, Invoice ID, Date of the invoice and billing country.
-select c.firstname, c.lastname, i.invoiceid, i.invoicedate, i.billingcountry
-from customer as c, invoice as i
-where c.country = 'Brazil' and
-c.customerid = i.customerid;
+select FirstName, LastName, Country, InvoiceId, InvoiceDate, BillingCountry
+from Customer c
+join Invoice
+On c.CustomerId 
+where c.Country = 'Brazil'
 
 -- 4. Provide a query showing only the Employees who are Sales Agents.
-select * from employee
-where employee.title = 'Sales Support Agent';
+select * from Employee
+where Employee.Title = 'Sales Support Agent';
 
 -- 5. Provide a query showing a unique list of billing countries from the Invoice table.
-select distinct billingcountry from invoice;
+select distinct BillingCountry from Invoice
 
 -- 6. Provide a query showing the invoices of customers who are from Brazil.
 select *
-from customer as c, invoice as i
-where c.country = 'Brazil' and
-c.customerid = i.customerid;
+from Customer c
+join Invoice
+On c.CustomerId 
+where c.Country = 'Brazil'
+
 
 -- 7. Provide a query that shows the invoices associated with each sales agent. The resultant table should include the Sales Agent's full name.
-select e.firstname, e.lastname, i.invoiceid, i.customerid, i.invoicedate, i.billingaddress, i.billingcountry, i.billingpostalcode, i.total
-from customer as c, invoice as i
-on c.customerid = i.customerid
-join employee as e
-on e.employeeid = c.supportrepid
-order by e.employeeid;
+select *
+from Customer c
+Join Invoice i
+on c.CustomerId
+join Employee e
+on e.EmployeeId
+order by e.EmployeeId;
 
 -- 8. Provide a query that shows the Invoice Total, Customer name, Country and Sale Agent name for all invoices and customers.
-select e.firstname as 'employee first', e.lastname as 'employee last', c.firstname as 'customer first', c.lastname as 'customer last', c.country, i.total
-from employee as e
-	join customer as c on e.employeeid = c.supportrepid
-	join invoice as i on c.customerid = i.customerid
+select e.FirstName as 'Employee FirstName', e.LastName as 'Employee LastName', c.FirstName as 'Customer FirstName', c.LastName as 'Customer LastName', c.Country, i.Total
+from Employee e
+	join Customer c on e.EmployeeId = c.SupportRepId
+	join Invoice i on c.CustomerId = i.CustomerId
 
 -- 9. How many Invoices were there in 2009 and 2011? What are the respective total sales for each of those years?
-select count(i.invoiceid), sum(i.total)
-from invoice as i
-where i.invoicedate between datetime('2011-01-01 00:00:00') and datetime('2011-12-31 00:00:00');
-
-select count(i.invoiceid), sum(i.total)
-from invoice as i
-where i.invoicedate between datetime('2009-01-01 00:00:00') and datetime('2009-12-31 00:00:00');
+select count(InvoiceId), sum(Total)
+From Invoice
+Where InvoiceDate between datetime('2009-01-01 00:00:00') and datetime('2009-12-31 00:00:00');
 
 -- 10. Looking at the InvoiceLine table, provide a query that COUNTs the number of line items for Invoice ID 37.
-select count(i.invoicelineid)
-from invoiceline as i
-where i.invoiceid = 37
+select count(InvoicelineId)
+from InvoiceLine
+where InvoiceId = 37
 
 -- 11. Looking at the InvoiceLine table, provide a query that COUNTs the number of line items for each Invoice. HINT: [GROUP BY](http://www.sqlite.org/lang_select.html#resultset)
-select invoiceid, count(invoicelineid)
-from invoiceline
-group by invoiceid
+select InvoiceId, count(InvoiceLineId)
+from InvoiceLine
+group by InvoiceId
 
 -- 12. Provide a query that includes the track name with each invoice line item.
 select i.*, t.name
-from invoiceline as i, track as t
-on i.trackid = t.trackid
+from invoiceline i, track t
+on i.trackid
 
 -- 13. Provide a query that includes the purchased track name AND artist name with each invoice line item.
 select i.*, t.name as 'track', ar.name as 'artist'
@@ -151,7 +160,10 @@ group by t.trackid
 order by count desc
 
 -- 25. Provide a query that shows the top 5 most purchased tracks over all.
-
+select i.invoiceid, sum(i.Quantity), t.name
+from invoiceline i, track t
+on i.trackid
+order by sum(i.Quantity) desc limit 5
 
 -- 26. Provide a query that shows the top 3 best selling artists.
 
