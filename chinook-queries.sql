@@ -166,10 +166,23 @@ on i.trackid
 order by sum(i.Quantity) desc limit 5
 
 -- 26. Provide a query that shows the top 3 best selling artists.
-
+SELECT count(i.trackId), a.name
+FROM artist a
+LEFT JOIN album as 'album' ON a.artistId
+LEFT JOIN track t ON album.albumId 
+LEFT JOIN invoiceLine i ON t.trackId 
+GROUP BY a.name
+ORDER BY i.trackId DESC
+LIMIT 3;
 
 -- 27. Provide a query that shows the most purchased Media Type.
-
+SELECT count(i.trackId), m.name
+FROM mediaType m
+LEFT JOIN track t ON m.mediaTypeId
+LEFT JOIN invoiceLine i ON i.trackId
+GROUP BY m.name
+ORDER BY i.trackId DESC
+LIMIT 1;
 
 
 
